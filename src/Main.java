@@ -17,7 +17,11 @@ public class Main {
         System.out.println(nfa);
 
      // ----- test for DFA Class --------
-        DFA dfa = new DFA(nfa);
+        DFA dfa = new DFA();
+        dfa.setStartState(q0);
+        dfa.addDFATransition(q0, 'a', q0);
+        dfa.addDFATransition(q0, 'b', q1);
+        dfa.addDFATransition(q1, 'b', q2);
         System.out.println("\n----- DFA -----");
         dfa.printDFA();
     }
