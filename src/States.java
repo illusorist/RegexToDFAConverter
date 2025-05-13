@@ -1,6 +1,8 @@
 import java.util.*;
 public class States {
-    int id, counter = 0;
+    int id=0;
+
+    static int counter = 0;
     private boolean Accepting;
     public Set<Transition> transitions;
     public States() {
