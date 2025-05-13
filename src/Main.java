@@ -13,8 +13,12 @@ public class Main {
         nfa.addTransition(q0, 'a', q0);
         nfa.addTransition(q0, 'b', q1);
         nfa.addTransition(q1, 'b', q2);
+        System.out.println("----- NFA -----");
         System.out.println(nfa);
 
-     // ----- test for NFA Class --------
+     // ----- test for DFA Class --------
+        DFA dfa = new DFA(nfa);
+        System.out.println("\n----- DFA -----");
+        dfa.printDFA();
     }
 }
