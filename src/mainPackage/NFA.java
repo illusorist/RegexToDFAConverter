@@ -1,8 +1,11 @@
+package mainPackage;
+
 import java.util.*;
 
 public class NFA {
     private Set<States> allStates ;
     private  States startState;
+    private  States acceptState;
     private  Set<Character> alphabet;
         public NFA (){
             this.allStates = new HashSet<>(); // hashset ignore duplicate
@@ -21,10 +24,11 @@ public class NFA {
         Transition t = new Transition(from, to, symbol);
         from.addTransition(t); // Adds to the from state's transition set
         alphabet.add(symbol); // Add symbol to alphabet
-        addState(from); // Ensure both states are part of the NFA
+        addState(from); // Ensure both states are part of the mainPackage.NFA
         addState(to);
+
     }
-  // Get all states in the NFA
+  // Get all states in the mainPackage.NFA
     public Set<States> getAllStates() {
         return allStates;
     }

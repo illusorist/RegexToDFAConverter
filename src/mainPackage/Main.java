@@ -1,7 +1,9 @@
+package mainPackage;
+
 public class Main {
     public static void main(String[] args) {
 
-     // ----- test for NFA Class --------
+     // ----- test for mainPackage.NFA Class --------
         States q0 = new States();
         States q1 = new States();
         States q2 = new States();
@@ -13,16 +15,16 @@ public class Main {
         nfa.addTransition(q0, 'a', q0);
         nfa.addTransition(q0, 'b', q1);
         nfa.addTransition(q1, 'b', q2);
-        System.out.println("----- NFA -----");
+        System.out.println("----- mainPackage.NFA -----");
         System.out.println(nfa);
 
-     // ----- test for DFA Class --------
+     // ----- test for mainPackage.DFA Class --------
         DFA dfa = new DFA();
         dfa.setStartState(q0);
         dfa.addDFATransition(q0, 'a', q0);
         dfa.addDFATransition(q0, 'b', q1);
         dfa.addDFATransition(q1, 'b', q2);
-        System.out.println("\n----- DFA -----");
+        System.out.println("\n----- mainPackage.DFA -----");
         dfa.printDFA();
     }
 }
