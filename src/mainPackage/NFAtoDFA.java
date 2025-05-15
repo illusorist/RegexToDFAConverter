@@ -1,6 +1,6 @@
-package mainPackage;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class NfaToDfa {
     private NFA nfa;
@@ -12,7 +12,7 @@ public class NfaToDfa {
     }
     
     /**
-     * Converts the NFA to DFA using (((subset construction method)))
+     * Converts the NFA to DFA using subset construction method
      */
     public DFA convert() {
         // Get the epsilon closure of the NFA's start state
@@ -34,9 +34,9 @@ public class NfaToDfa {
             States currentDfaState = unprocessedStates.poll();
             Set<States> currentNfaStates = getNfaStatesForDfaState(currentDfaState);
             
-            // Process each symbol in the alphabet
+            // Process each symbol in the alphabet (excluding epsilon)
             for (char symbol : nfa.getAlphabet()) {
-                if (symbol == 'ε') continue; // Skip epsilon transitions in DFA
+                if (symbol == 'ε') continue;
                 
                 // Get move (transition) for the current symbol
                 Set<States> moved = move(currentNfaStates, symbol);
@@ -52,8 +52,8 @@ public class NfaToDfa {
                     } else {
                         // Create new DFA state
                         String stateName = getStateName(closure);
-                        boolean isAccepting = isAccepting(closure);
-                        targetDfaState = new States(stateName, isAccepting);
+                        boolean accepting = isAccepting(closure);
+                        targetDfaState = new States(stateName, accepting);
                         
                         // Add to queue and map
                         unprocessedStates.add(targetDfaState);
@@ -123,40 +123,29 @@ public class NfaToDfa {
     private String getStateName(Set<States> states) {
         if (states.isEmpty()) return "DEAD";
         
-        List<String> names = new ArrayList<>();
-        for (States s : states) {
-            names.add(s.toString());
-        }
-        Collections.sort(names);
-        return "{" + String.join(",", names) + "}";
+        return states.stream()
+                .map(States::getName)
+                .sorted()
+                .collect(Collectors.joining(",", "{", "}"));
     }
     
     /**
      * Retrieves the NFA states that a DFA state represents
      */
     private Set<States> getNfaStatesForDfaState(States dfaState) {
-        // The state name encodes the NFA states it represents
-        String name = dfaState.toString();
+        String name = dfaState.getName();
         if (name.equals("DEAD")) return Collections.emptySet();
         
-        name = name.replace("{", "").replace("}", "");
-        String[] stateNames = name.split(",");
+        // Remove braces and split by commas
+        String[] stateNames = name.substring(1, name.length() - 1).split(",");
         
-        Set<States> result = new HashSet<>();
-        for (States s : nfa.getAllStates()) {
-            for (String n : stateNames) {
-                if (s.toString().equals(n)) {
-                    result.add(s);
-                    break;
-                }
-            }
-        }
-        
-        return result;
+        return nfa.getAllStates().stream()
+                .filter(s -> Arrays.asList(stateNames).contains(s.getName()))
+                .collect(Collectors.toSet());
     }
     
     /**
-     * Nfa input inquirement from the user
+     * Interactive NFA input from the user
      */
     public static void interactiveConversion() {
         Scanner scanner = new Scanner(System.in);
@@ -180,6 +169,10 @@ public class NfaToDfa {
         System.out.print("Enter start state: ");
         String startStateName = scanner.nextLine().trim();
         States startState = statesMap.get(startStateName);
+        if (startState == null) {
+            System.out.println("Invalid start state!");
+            return;
+        }
         nfa.setStartState(startState);
         
         // Set accepting states
@@ -187,13 +180,14 @@ public class NfaToDfa {
         String[] acceptingNames = scanner.nextLine().split(",");
         for (String name : acceptingNames) {
             name = name.trim();
-            statesMap.get(name).setAccepting(true);
+            States s = statesMap.get(name);
+            if (s != null) {
+                s.setAccepting(true);
+            }
         }
         
         // Add all states to NFA
-        for (States state : statesMap.values()) {
-            nfa.addState(state);
-        }
+        statesMap.values().forEach(nfa::addState);
         
         // Get transitions
         System.out.println("Enter transitions (from,symbol,to). Enter 'done' when finished:");
@@ -223,10 +217,9 @@ public class NfaToDfa {
             nfa.addTransition(from, symbol, to);
         }
         
-        // Conversion Processing
+        // Perform conversion
         NfaToDfa converter = new NfaToDfa(nfa);
         DFA dfa = converter.convert();
-        
         
         System.out.println("\n=== Original NFA ===");
         System.out.println(nfa);
