@@ -4,17 +4,32 @@ import java.util.*;
 
 public class NFAtoDFA {
 
+    private static final char EPSILON = 'ε';
+
+    private NFAtoDFA() {
+        // Utility class
+    }
+
     public static DFA convert(NFA nfa) {
         DFA dfa = new DFA();
         Map<Set<States>, States> stateMapping = new HashMap<>();
         Queue<Set<States>> queue = new LinkedList<>();
-        
-        // Start state of DFA is the epsilon closure of NFA's start state
-        Set<States> startSet = epsilonClosure(Set.of(nfa.getStartState()));
-        States dfaStartState = new States(setToName(startSet));
+
+        Set<States> initialSet = new HashSet<>();
+        if (nfa.getStartState() != null) {
+            initialSet.add(nfa.getStartState());
+        } else {
+            System.err.println("NFA has no start state. Cannot convert.");
+            return dfa;
+        }
+
+        Set<States> startSet = epsilonClosure(initialSet, nfa);
+
+        States dfaStartState = new States(startSet);
         if (containsAccepting(startSet)) {
             dfaStartState.setAccepting(true);
         }
+
         dfa.setStartState(dfaStartState);
         stateMapping.put(startSet, dfaStartState);
         queue.add(startSet);
@@ -23,18 +38,23 @@ public class NFAtoDFA {
             Set<States> currentSet = queue.poll();
             States currentDFAState = stateMapping.get(currentSet);
 
-            for (char symbol : nfa.getAlphabet()) {
-                Set<States> nextSet = new HashSet<>();
+            Set<Character> alphabet = new HashSet<>(nfa.getAlphabet());
+            alphabet.remove(EPSILON);
+
+            for (char symbol : alphabet) {
+                Set<States> nextSetRaw = new HashSet<>();
                 for (States state : currentSet) {
-                    nextSet.addAll(nfa.getNextStates(state, symbol));
+                    nextSetRaw.addAll(nfa.getNextStates(state, symbol));
                 }
 
-                nextSet = epsilonClosure(nextSet);
+                Set<States> nextSet = epsilonClosure(nextSetRaw, nfa);
+
                 if (nextSet.isEmpty()) continue;
 
                 States nextDFAState = stateMapping.get(nextSet);
+
                 if (nextDFAState == null) {
-                    nextDFAState = new States(setToName(nextSet));
+                    nextDFAState = new States(nextSet);
                     if (containsAccepting(nextSet)) {
                         nextDFAState.setAccepting(true);
                     }
@@ -46,77 +66,68 @@ public class NFAtoDFA {
             }
         }
 
+        for(States dfaState : stateMapping.values()){
+            dfa.addState(dfaState);
+        }
+
         return dfa;
     }
 
-    private static Set<States> epsilonClosure(Set<States> states) {
-        // Add support for ε-transitions if your NFA has them.
-        return states;
+    public static DFA convertAndPrint(NFA nfa) {
+        System.out.println("\n--- Converting NFA to DFA ---");
+        DFA dfa = convert(nfa);
+        System.out.println("\n--- DFA Result ---");
+        printDFA(dfa);
+        return dfa;
+    }
+
+    public static void printDFA(DFA dfa) {
+        if (dfa == null) {
+            System.out.println("DFA is null.");
+            return;
+        }
+        dfa.printDFA();
+    }
+
+    private static Set<States> epsilonClosure(Set<States> states, NFA nfa) {
+        Set<States> closure = new HashSet<>(states);
+        Stack<States> stack = new Stack<>();
+
+        for (States state : states) {
+            stack.push(state);
+        }
+
+        while (!stack.isEmpty()) {
+            States currentState = stack.pop();
+            Set<States> epsilonReachable = nfa.getNextStates(currentState, EPSILON);
+
+            for (States nextState : epsilonReachable) {
+                if (closure.add(nextState)) {
+                    stack.push(nextState);
+                }
+            }
+        }
+        return closure;
     }
 
     private static boolean containsAccepting(Set<States> states) {
         for (States s : states) {
-            if (s.Accepting()) return true;
+            if (s.Accepting()) {
+                return true;
+            }
         }
         return false;
     }
 
     private static String setToName(Set<States> states) {
+        if (states == null || states.isEmpty()) {
+            return "{}";
+        }
         List<String> names = new ArrayList<>();
         for (States s : states) {
-            names.add(s.getName());
+            names.add("q" + s.getId());
         }
         Collections.sort(names);
-        return String.join("_", names);
-    }
-
-    @SuppressWarnings("resource")
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        NFA nfa = new NFA();
-
-        System.out.print("Enter number of states: ");
-        int numStates = scanner.nextInt();
-        scanner.nextLine();
-
-        Map<String, States> stateMap = new HashMap<>();
-
-        for (int i = 0; i < numStates; i++) {
-            System.out.print("Enter state name: ");
-            String name = scanner.nextLine();
-            States state = new States(name);
-            stateMap.put(name, state);
-            nfa.addState(state);
-        }
-
-        System.out.print("Enter start state: ");
-        String startName = scanner.nextLine();
-        nfa.setStartState(stateMap.get(startName));
-
-        System.out.print("Enter number of accepting states: ");
-        int acceptCount = scanner.nextInt();
-        scanner.nextLine();
-        for (int i = 0; i < acceptCount; i++) {
-            System.out.print("Enter accepting state name: ");
-            String acc = scanner.nextLine();
-            stateMap.get(acc).setAccepting(true);
-        }
-
-        System.out.print("Enter number of transitions: ");
-        int transCount = scanner.nextInt();
-        scanner.nextLine();
-
-        for (int i = 0; i < transCount; i++) {
-            System.out.print("Enter transition (from symbol to): ");
-            String[] parts = scanner.nextLine().split(" ");
-            String from = parts[0];
-            char symbol = parts[1].charAt(0);
-            String to = parts[2];
-            nfa.addTransition(stateMap.get(from), symbol, stateMap.get(to));
-        }
-
-        DFA dfa = convert(nfa);
-        System.out.println("DFA result:");
-        dfa.printDFA();
+        return "{" + String.join(",", names) + "}";
     }
 }
