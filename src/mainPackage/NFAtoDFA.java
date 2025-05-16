@@ -2,7 +2,7 @@ package mainPackage;
 
 import java.util.*;
 
-public class NfaToDfa {
+public class NFAtoDFA {
 
     public static DFA convert(NFA nfa) {
         DFA dfa = new DFA();
@@ -70,6 +70,7 @@ public class NfaToDfa {
         return String.join("_", names);
     }
 
+    @SuppressWarnings("resource")
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         NFA nfa = new NFA();
