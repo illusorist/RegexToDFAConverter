@@ -6,6 +6,7 @@ public class RegexToNFA {
     static String operators = "*|().+?";
 
     public static String addConcat (String regex){
+        regex = regex.replace(" ", "");
         StringBuilder newregex = new StringBuilder();
         for (int i = 0; i < regex.length(); i++){
             if (i ==regex.length() - 1){
@@ -14,6 +15,7 @@ public class RegexToNFA {
             }
             char c = regex.charAt(i);
             char next = regex.charAt(i+1);
+
             if (
                     (!operators.contains(String.valueOf(c)) || c == ')' || c == '*' || c == '+' || c == '?')
                     && (!operators.contains(String.valueOf(next)) || next == '(')

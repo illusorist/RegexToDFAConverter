@@ -5,7 +5,7 @@ public class Main {
 
         // ----- test for mainPackage.NFA Class --------
 
-        NFAtoDFA.convertAndPrint(RegexToNFA.convertRegexToNFA("a(b*|c*)"));
+        NFAtoDFA.convertAndPrint(RegexToNFA.convertRegexToNFA("((a)(ab)) | ((aa)(ab))"));
 
     }
 }
