@@ -238,6 +238,8 @@ public class RegexToNFA {
 
 
     public static NFA convertRegexToNFA (String Regex) throws Exception {
+        System.out.println("--- Converting Regex to DFA ---");
+        System.out.println("Regex: " + Regex);
         return buildNFAfromFragments(toPostfix(addConcat(Regex)));
     }
 

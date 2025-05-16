@@ -74,7 +74,6 @@ public class NFAtoDFA {
     }
 
     public static DFA convertAndPrint(NFA nfa) {
-        System.out.println("\n--- Converting NFA to DFA ---");
         DFA dfa = convert(nfa);
         System.out.println("\n--- DFA Result ---");
         printDFA(dfa);
