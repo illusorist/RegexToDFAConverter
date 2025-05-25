@@ -1,4 +1,7 @@
 package Testing;
+import Turing.*;
+
+import Turing.ConvertRegexToTuringMachine;
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -7,7 +10,6 @@ public class Main {
 
 //        NFAtoDFA.convertAndPrint(RegexToNFA.convertRegexToNFA("(1*01*01*)*"));
 
-
-
+        ConvertRegexToTuringMachine.convertAndPrintTransitions("a*b");
     }
 }

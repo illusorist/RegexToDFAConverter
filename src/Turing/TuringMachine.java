@@ -18,6 +18,14 @@ public class TuringMachine {
         this.currentState = startStateName;
     }
 
+    // Overload to skip the tape simulation
+    public TuringMachine(String startStateName, Set<String> acceptStates, List<TMTransition> tmTransitions) {
+        this.startStateName = startStateName;
+        this.acceptStates = acceptStates;
+        this.tmTransitions = tmTransitions;
+        this.currentState = startStateName;
+    }
+
     public boolean step() {
 
         for (TMTransition t : tmTransitions) {
