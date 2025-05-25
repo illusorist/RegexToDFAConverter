@@ -6,10 +6,9 @@ import Turing.ConvertRegexToTuringMachine;
 public class Main {
     public static void main(String[] args) throws Exception {
 
-        // ----- test for mainPackage.NFA Class --------
+                    // This simulates a Turing Machine tape
+//        ConvertRegexToTuringMachine.convertAndSimulate("b[0-9]+", "b");
 
-//        NFAtoDFA.convertAndPrint(RegexToNFA.convertRegexToNFA("(1*01*01*)*"));
-
-        ConvertRegexToTuringMachine.convertAndSimulate("[A-Z]", "B");
+        ConvertRegexToTuringMachine.convertAndPrintTransitions("ab(c|d)*");
     }
 }

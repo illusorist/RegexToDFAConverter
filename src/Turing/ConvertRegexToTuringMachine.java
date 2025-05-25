@@ -18,9 +18,13 @@ public class ConvertRegexToTuringMachine {
                 NFAtoDFA.convert(
                         RegexToNFA.convertRegexToNFA(regex)));
 
+        System.out.println("/// Start State: " + tm.startStateName);
         for (TMTransition t : tm.tmTransitions){
-            System.out.println(t.getCurrentState() + "---"
-                    + t.getReadSymbol() + "--->" + t.getNextState());
+            System.out.print(t.getCurrentState() + " ---"
+                    + t.getReadSymbol() + "---> " + t.getNextState());
+            if (tm.acceptStates.contains(t.getNextState())){
+                System.out.println(" [ACCEPTING]");} else {
+                System.out.println(); }
         }
     }
 }

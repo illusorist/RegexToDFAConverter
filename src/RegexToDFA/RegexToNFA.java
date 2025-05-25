@@ -2,11 +2,15 @@ package RegexToDFA;
 
 import java.util.*;
 
+
 public class RegexToNFA {
     static String operators = "*|().+?";
 
     public static String addConcat (String regex){
         regex = regex.replace(" ", "");
+        if (regex.contains("[") || regex.contains("]")){
+            regex = expandCharacterClasses(regex);
+        }
         StringBuilder newregex = new StringBuilder();
         for (int i = 0; i < regex.length(); i++){
             if (i ==regex.length() - 1){
@@ -242,6 +246,58 @@ public class RegexToNFA {
         System.out.println("Regex: " + Regex);
         return buildNFAfromFragments(toPostfix(addConcat(Regex)));
     }
+
+    private static String expandCharacterClasses(String regex) {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < regex.length(); i++) {
+            char current = regex.charAt(i);
+            if (current == '[') {
+                int end = regex.indexOf(']', i);
+                if (end == -1) {
+                    throw new IllegalArgumentException("Unmatched [ in regex");
+                }
+
+                String classContent = regex.substring(i + 1, end);
+                boolean negated = classContent.startsWith("^");
+                int startIdx = negated ? 1 : 0;
+
+                Set<Character> chars = new LinkedHashSet<>();
+                for (int j = startIdx; j < classContent.length(); j++) {
+                    char c = classContent.charAt(j);
+                    if (j + 2 < classContent.length() && classContent.charAt(j + 1) == '-') {
+                        char endChar = classContent.charAt(j + 2);
+                        for (char ch = c; ch <= endChar; ch++) {
+                            chars.add(ch);
+                        }
+                        j += 2;
+                    } else {
+                        chars.add(c);
+                    }
+                }
+
+                if (negated) {
+                    Set<Character> all = new LinkedHashSet<>();
+                    for (char ch = 32; ch < 127; ch++) all.add(ch);
+                    all.removeAll(chars);
+                    chars = all;
+                }
+
+                result.append('(');
+                boolean first = true;
+                for (char ch : chars) {
+                    if (!first) result.append('|');
+                    result.append(ch);
+                    first = false;
+                }
+                result.append(')');
+                i = end; // skip to after ']'
+            } else {
+                result.append(current);
+            }
+        }
+        return result.toString();
+    }
+
 
 
 }
