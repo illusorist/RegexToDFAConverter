@@ -1,7 +1,5 @@
 package Turing;
 
-import mainPackage.*;
-
 import java.util.List;
 import java.util.Set;
 

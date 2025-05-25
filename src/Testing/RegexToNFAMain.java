@@ -1,6 +1,6 @@
 package Testing;
 
-import mainPackage.*;
+import RegexToDFA.*;
 
 import java.util.*;
 

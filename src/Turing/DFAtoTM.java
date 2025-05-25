@@ -1,5 +1,5 @@
 package Turing;
-import mainPackage.*;
+import RegexToDFA.*;
 
 import java.util.*;
 
@@ -27,6 +27,8 @@ public class DFAtoTM {
             }
 
         }
+        System.out.println("Accepting states: " + acceptStates);
+
         return new TuringMachine(
                 tape,
                 dfa.getStartState().getName(),

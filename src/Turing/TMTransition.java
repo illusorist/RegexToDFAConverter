@@ -1,5 +1,4 @@
 package Turing;
-import mainPackage.*;
 
 public class TMTransition {
     private String currentState;

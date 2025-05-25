@@ -12,6 +12,7 @@ public class Tape {
     public Tape(String input){
         this.input = input;
         int length = input.length() + (input.length() / 2);
+        if (length < 5) length += 5;
         tape = new char[length];
         head = (tape.length / 5);
         Arrays.fill(tape, '_');
@@ -30,10 +31,7 @@ public class Tape {
     }
 
     public void moveHead(char c){
-        if (tape.length == 1){
-            // No need to move the head
-            return;
-        }
+
         if (c == 'R' && head < tape.length-1){
             head++;
         }

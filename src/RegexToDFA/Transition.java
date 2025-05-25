@@ -1,4 +1,4 @@
-package mainPackage;
+package RegexToDFA;
 
 import java.util.Objects;
 
