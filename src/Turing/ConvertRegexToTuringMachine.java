@@ -11,10 +11,6 @@ public class ConvertRegexToTuringMachine {
                         RegexToNFA.convertRegexToNFA(regex)), tape.input);
         tm.run();
 
-        for (TMTransition t : tm.tmTransitions){
-            System.out.println(t.getCurrentState() + "---"
-                    + t.getReadSymbol() + "--->" + t.getNextState());
-        }
     }
 
     public static void convertAndPrintTransitions(String regex) throws Exception {

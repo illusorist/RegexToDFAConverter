@@ -10,6 +10,6 @@ public class Main {
 
 //        NFAtoDFA.convertAndPrint(RegexToNFA.convertRegexToNFA("(1*01*01*)*"));
 
-        ConvertRegexToTuringMachine.convertAndPrintTransitions("a*b");
+        ConvertRegexToTuringMachine.convertAndSimulate("[A-Z]", "B");
     }
 }
