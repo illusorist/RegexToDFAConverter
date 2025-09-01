@@ -8,10 +8,10 @@ No compiled version yet :(
 
 [Eslam Ahmed](https://github.com/illusorist)
 
-[Marwan Osama](github.com/maro7420)
+[Marwan Osama](https://github.com/maro7420)
 
-[Ahmed Yousri](github.com/v0id)
+[Ahmed Yousri](https://github.com/v0id)
 
-[Anas Abdelraoof](github.com/AnasAbdelraoof04)
+[Anas Abdelraoof](https://github.com/AnasAbdelraoof04)
 
-[Ahmed Mahmoud](github.com/AhmedMahmoud195)
+[Ahmed Mahmoud](https://github.com/AhmedMahmoud195)
